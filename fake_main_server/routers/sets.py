@@ -1,5 +1,5 @@
 import logging
-from http.client import HTTPException
+from fastapi import HTTPException
 
 from fastapi import APIRouter
 from fake_main_server.config import TOOLS_SETS_IDS, TOOLS_SETS_TYPES, TOOLS_IDS

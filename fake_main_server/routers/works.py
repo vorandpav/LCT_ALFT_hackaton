@@ -4,6 +4,7 @@ from http.client import HTTPException
 from fastapi import APIRouter, HTTPException
 from fake_main_server.config import WORKS_IDS
 from fake_main_server.services import works
+from fake_main_server.utils import security
 
 router = APIRouter()
 
@@ -16,35 +17,49 @@ async def list_works():
     return WORKS_IDS
 
 
-@router.get("/{work_id}")
-async def get_work(work_id: int):
-    if work_id not in WORKS_IDS:
-        logger.error(f"Work {work_id} not found")
-        raise HTTPException(status_code=404, detail="Work not found")
+@router.get("/{work_id}/{stage}")
+async def get_work(work_id: int, stage: str):
+    try:
+        security.check_correctness(work_id, stage)
+    except HTTPException as e:
+        logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
+        raise e
 
-    logger.info(f"Retrieved work {work_id}: {WORKS_IDS[work_id]}")
-    return WORKS_IDS[work_id]
-
-
-@router.post("/{work_id}/scan_giving")
-async def scan_giving(work_id: int):
-    logger.info(f"Scanning giving stage for work {work_id}")
-    return await works.scan_stage(work_id, stage="giving")
+    logger.info(f"Retrieved work {work_id} at stage {stage}")
+    return works.upload_data(work_id, stage=stage)
 
 
-@router.post("/{work_id}/scan_getting")
-async def scan_getting(work_id: int):
-    logger.info(f"Scanning getting stage for work {work_id}")
-    return await works.scan_stage(work_id, stage="getting")
+@router.post("/{work_id}/{stage}/scan")
+async def scan_table(work_id: int, stage: str):
+    try:
+        security.check_correctness(work_id, stage)
+    except HTTPException as e:
+        logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
+        raise e
+
+    logger.info(f"Scanning at {stage} for work {work_id}")
+    return await works.scan_table(work_id, stage=stage)
 
 
-@router.post("/{work_id}/complete_giving")
-async def complete_giving(work_id: int):
-    logger.info(f"Completing giving stage for work {work_id}")
-    return works.complete_stage(work_id, stage="giving")
+@router.post("/{work_id}/{stage}/approve")
+async def approve_box(work_id: int, stage: str, box: dict):
+    try:
+        security.check_correctness(work_id, stage)
+    except HTTPException as e:
+        logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
+        raise e
+
+    logger.info(f"Approving box at {stage} for work {work_id}: {box}")
+    return await works.approve_box(work_id, stage=stage, box=box)
 
 
-@router.post("/{work_id}/complete_getting")
-async def complete_getting(work_id: int):
-    logger.info(f"Completing getting stage for work {work_id}")
-    return works.complete_stage(work_id, stage="getting")
+@router.post("/{work_id}/{stage}/complete")
+async def complete_stage(work_id: int, stage: str):
+    try:
+        security.check_correctness(work_id=work_id, stage=stage)
+    except HTTPException as e:
+        logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
+        raise e
+
+    logger.info(f"Completing stage {stage} for work {work_id}")
+    return await works.complete_stage(work_id)

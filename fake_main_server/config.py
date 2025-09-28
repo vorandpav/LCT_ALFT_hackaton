@@ -3,10 +3,14 @@ from gc import set_debug
 
 PHOTO_DIR = os.getenv("PHOTO_DIR", "./photos")
 
-TEST_USERS = {
-    1: {"user_id": 501, "user_name": "Иван Петров", "powers": "technician"},
-    2: {"user_id": 502, "user_name": "Анна Смирнова", "powers": "technician"},
-    3: {"user_id": 503, "user_name": "Сергей Иванов", "powers": "admin"},
+FAKE_CAMERA_URL = "http://localhost:9000"
+
+WORK_STAGES = ["PUBLISHED", "GIVING", "IN_WORK", "GETTING", "COMPLETED"]
+
+USERS_IDS = {
+    501: {"user_name": "Иван Петров", "powers": "technician"},
+    502: {"user_name": "Анна Смирнова", "powers": "technician"},
+    503: {"user_name": "Сергей Иванов", "powers": "admin"},
 }
 
 TOOLS_IDS = {
@@ -72,24 +76,24 @@ WORKS_IDS = {
         "request_time_end": None,
         "user_id": 501,
         "set_id": 301,
-        "photo_ids_giving": None,
+        "photo_ids_giving": [],
         "boxes": [],
         "detected_tools_giving": [],
-        "photo_ids_getting": None,
+        "photo_ids_getting": [],
         "detected_tools_getting": [],
-        "state": "published",
+        "stage": "PUBLISHED",
     },
     202: {
         "request_time_start": None,
         "request_time_end": None,
         "user_id": 502,
         "set_id": 302,
-        "photo_ids_giving": None,
+        "photo_ids_giving": [],
         "boxes_giving": [],
         "detected_tools_giving": [],
-        "photo_ids_getting": None,
+        "photo_ids_getting": [],
         "boxes_getting": [],
         "detected_tools_getting": [],
-        "state": "published",
+        "stage": "PUBLISHED",
     }
 }

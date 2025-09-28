@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import users, works, sets
+from fake_main_server.routers import users, works, sets
 
 
 def create_app() -> FastAPI:

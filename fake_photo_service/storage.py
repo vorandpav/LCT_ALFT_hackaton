@@ -9,23 +9,20 @@ log = logging.getLogger(__name__)
 current_index = {}
 
 
-def get_photo_path(table_id: str, step: int | None = None):
-    """Определяет путь к файлу фото для указанного table_id и шага"""
-    if table_id not in TEST_RESPONSES:
-        raise HTTPException(status_code=404, detail="table_id not found")
+def get_photo_path(work_id: str):
+    """Определяет путь к файлу фото для указанного work_id"""
+    if work_id not in TEST_RESPONSES:
+        raise HTTPException(status_code=404, detail="work_id not found")
 
-    photos = TEST_RESPONSES[table_id]
+    photos = TEST_RESPONSES[work_id]
 
-    if step is not None:
-        idx = step - 1
-    else:
-        idx = current_index.get(table_id, 0)
-        current_index[table_id] = idx + 1
+    idx = current_index.get(work_id, 0)
+    current_index[work_id] = idx + 1
 
     if idx < 0 or idx >= len(photos):
         raise HTTPException(status_code=404, detail="No photo for this step")
 
-    photo_path = os.path.join(PHOTO_BASE_DIR, photos[idx])
+    photo_path = f"{PHOTO_BASE_DIR}/{photos[idx]}"
     if not os.path.exists(photo_path):
         log.error(f"File not found: {photo_path}")
         raise HTTPException(status_code=500, detail=f"File not found: {photos[idx]}")
