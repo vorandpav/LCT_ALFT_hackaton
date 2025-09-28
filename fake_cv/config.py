@@ -15,19 +15,19 @@ TEST_RESPONSES = {
             {
                 "id": "d2",
                 "bbox": [0.380505, 0.395509, 0.128886, 0.616580],
-                "predicted_class": "Отвёртка на смещенный крест",
+                "predicted_class": "Отвертка",
                 "confidence": 0.92
             },
             {
                 "id": "d3",
                 "bbox": [0.485751, 0.426598, 0.090674, 0.531952],
-                "predicted_class": "Пассатижи контровочные",
+                "predicted_class": "Пассатижи",
                 "confidence": 0.88
             },
             {
                 "id": "d4",
                 "bbox": [0.567034, 0.410190, 0.104275, 0.478411],
-                "predicted_class": "Пассатижи контровочные",
+                "predicted_class": "Пассатижи",
                 "confidence": 0.85
             },
             {
@@ -39,7 +39,7 @@ TEST_RESPONSES = {
             {
                 "id": "d6",
                 "bbox": [0.792098, 0.422712, 0.113990, 0.541451],
-                "predicted_class": "Отвёртка '-'",
+                "predicted_class": "Отвертка",
                 "confidence": 0.80
             },
             {
@@ -75,7 +75,7 @@ TEST_RESPONSES = {
             {
                 "id": "d2",
                 "bbox": [0.258096, 0.376511, 0.218264, 0.405872],
-                "predicted_class": "Отвёртка '-'",
+                "predicted_class": "Отвертка",
                 "confidence": 0.85
             },
             {
@@ -87,13 +87,13 @@ TEST_RESPONSES = {
             {
                 "id": "d4",
                 "bbox": [0.377915, 0.531952, 0.139249, 0.490501],
-                "predicted_class": "Пассатижи контровочные",
+                "predicted_class": "Пассатижи",
                 "confidence": 0.83
             },
             {
                 "id": "d5",
                 "bbox": [0.502267, 0.373921, 0.169041, 0.407599],
-                "predicted_class": "Пассатижи контровочные",
+                "predicted_class": "Пассатижи",
                 "confidence": 0.82
             },
             {
@@ -111,7 +111,7 @@ TEST_RESPONSES = {
             {
                 "id": "d8",
                 "bbox": [0.748381, 0.409326, 0.235104, 0.271157],
-                "predicted_class": "Отвёртка на смещённый крест",
+                "predicted_class": "Отвертка",
                 "confidence": 0.76
             },
             {
@@ -129,7 +129,7 @@ TEST_RESPONSES = {
             {
                 "id": "d11",
                 "bbox": [0.732837, 0.277202, 0.277850, 0.245250],
-                "predicted_class": "Отвертка '+'",
+                "predicted_class": "Отвертка",
                 "confidence": 0.70
             }
         ]
@@ -158,19 +158,19 @@ TEST_RESPONSES = {
             {
                 "id": "d4",
                 "bbox": [0.595207, 0.351468, 0.259067, 0.317789],
-                "predicted_class": "Пассатижи контровочные",
+                "predicted_class": "Пассатижи",
                 "confidence": 0.84
             },
             {
                 "id": "d5",
                 "bbox": [0.715997, 0.312608, 0.143135, 0.416235],
-                "predicted_class": "Отвёртка '-'",
+                "predicted_class": "Отвертка",
                 "confidence": 0.82
             },
             {
                 "id": "d6",
                 "bbox": [0.751619, 0.474093, 0.091321, 0.331606],
-                "predicted_class": "Отвёртка на смещённый крест",
+                "predicted_class": "Отвертка",
                 "confidence": 0.80
             },
             {
@@ -194,13 +194,13 @@ TEST_RESPONSES = {
             {
                 "id": "d10",
                 "bbox": [0.507124, 0.620466, 0.357513, 0.185665],
-                "predicted_class": "Пассатижи контровочные",
+                "predicted_class": "Пассатижи",
                 "confidence": 0.72
             },
             {
                 "id": "d11",
                 "bbox": [0.492228, 0.564767, 0.329016, 0.129534],
-                "predicted_class": "Отвертка '+'",
+                "predicted_class": "Отвертка",
                 "confidence": 0.70
             }
         ]

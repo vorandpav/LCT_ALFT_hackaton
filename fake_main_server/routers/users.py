@@ -1,0 +1,38 @@
+import logging
+from http.client import HTTPException
+
+from fastapi import APIRouter
+from fake_main_server.config import TEST_USERS
+from fake_main_server.utils.security import check_access
+
+router = APIRouter()
+
+logger = logging.getLogger("users")
+
+
+@router.get("/")
+async def list_users():
+    logger.info("Listing all users")
+    return TEST_USERS
+
+
+@router.get("/{user_id}")
+async def get_user(user_id: int):
+    if user_id not in TEST_USERS:
+        logger.error(f"User {user_id} not found")
+        raise HTTPException(404, "User not found")
+
+    logger.info(f"Retrieved user {user_id}: {TEST_USERS[user_id]}")
+    return TEST_USERS[user_id]
+
+
+@router.get("/authorize/{user_id}/work/{work_id}")
+async def authorize_user(user_id: int, work_id: int):
+    try:
+        check_access(user_id, work_id)
+    except HTTPException as e:
+        logger.error(f"Authorization failed for user {user_id} on work {work_id}: {e}")
+        raise e
+
+    logger.info(f"User {user_id} authorized for work {work_id}")
+    return {"status": "authorized"}
