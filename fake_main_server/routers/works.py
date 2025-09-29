@@ -44,7 +44,7 @@ async def scan_table(work_id: int, stage: str):
 @router.post("/{work_id}/{stage}/approve")
 async def approve_box(work_id: int, stage: str, box: dict):
     try:
-        security.check_correctness(work_id, stage)
+        security.check_correctness(work_id=work_id, stage=stage)
     except HTTPException as e:
         logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
         raise e
