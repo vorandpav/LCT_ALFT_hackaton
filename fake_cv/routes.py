@@ -16,9 +16,11 @@ async def health_check():
 @router.post("/infer")
 async def infer(file: UploadFile = File(...)):
     """Принимает фото и возвращает заранее подготовленный результат"""
-    await asyncio.sleep(5.0)
+    await asyncio.sleep(2)
 
-    match = find_matching_file(file)
+    content = await file.read()
+    match = find_matching_file(content)
+
     if not match:
         log.warning("No match for uploaded file")
         raise HTTPException(status_code=404, detail="No match for uploaded file")

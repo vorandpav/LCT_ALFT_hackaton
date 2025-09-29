@@ -2,10 +2,11 @@ import asyncio
 import logging
 from fastapi import APIRouter
 import os
+
 from .storage import get_photo_path, serve_photo
 
 router = APIRouter()
-log = logging.getLogger(__name__)
+log = logging.getLogger("fake_photo_service")
 
 
 @router.get("/health")

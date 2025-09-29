@@ -4,7 +4,7 @@ from fastapi.responses import FileResponse
 from fastapi import HTTPException
 from .config import PHOTO_BASE_DIR, TEST_RESPONSES
 
-log = logging.getLogger(__name__)
+log = logging.getLogger("fake_photo_service")
 
 current_index = {}
 

@@ -1,7 +1,7 @@
 import os
 from gc import set_debug
 
-PHOTO_DIR = os.getenv("PHOTO_DIR", "./photos")
+PHOTO_DIR = os.getenv("PHOTO_DIR", "photos")
 
 FAKE_CAMERA_URL = "http://localhost:9000"
 
@@ -76,11 +76,10 @@ WORKS_IDS = {
         "request_time_end": None,
         "user_id": 501,
         "set_id": 301,
-        "photo_ids_giving": [],
-        "boxes": [],
-        "detected_tools_giving": [],
-        "photo_ids_getting": [],
-        "detected_tools_getting": [],
+        "photo_ids_GIVING": [],
+        "approved_boxes_GIVING": [],
+        "photo_ids_GETTING": [],
+        "approved_boxes_GETTING": [],
         "stage": "PUBLISHED",
     },
     202: {
@@ -88,12 +87,10 @@ WORKS_IDS = {
         "request_time_end": None,
         "user_id": 502,
         "set_id": 302,
-        "photo_ids_giving": [],
-        "boxes_giving": [],
-        "detected_tools_giving": [],
-        "photo_ids_getting": [],
-        "boxes_getting": [],
-        "detected_tools_getting": [],
+        "photo_ids_GIVING": [],
+        "approved_boxes_GIVING": [],
+        "photo_ids_GETTING": [],
+        "approved_boxes_GETTING": [],
         "stage": "PUBLISHED",
     }
 }

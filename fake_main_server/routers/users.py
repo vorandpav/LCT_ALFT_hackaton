@@ -37,4 +37,6 @@ async def authorize_user(user_id: int, work_id: int):
         raise e
 
     logger.info(f"User {user_id} authorized for work {work_id}")
-    return {"status": "authorized", "stage": WORKS_IDS[work_id]["stage"]}
+    return {"user_name": USERS_IDS[user_id]["user_name"],
+            "powers": USERS_IDS[user_id]["powers"],
+            "stage": WORKS_IDS[work_id]["stage"]}

@@ -14,15 +14,9 @@ def file_md5(file_path: str) -> str:
     return hash_md5.hexdigest()
 
 
-def find_matching_file(upload: UploadFile) -> str | None:
-    """
-    Сравнивает загруженное фото с тестовыми.
-    Возвращает имя файла (например "photo_123_1.jpg") или None.
-    """
-    content = upload.file.read()
-    upload.file.seek(0)  # сбросить указатель, чтобы можно было читать ещё раз
-
-    upload_hash = hashlib.md5(content).hexdigest()
+def find_matching_file(upload_content: bytes) -> str | None:
+    """Сравнивает загруженный контент с тестовыми фото по хешу."""
+    upload_hash = hashlib.md5(upload_content).hexdigest()
 
     for fname in TEST_RESPONSES:
         test_path = os.path.join(PHOTO_DIR, fname)

@@ -20,25 +20,25 @@ async def list_works():
 @router.get("/{work_id}/{stage}")
 async def get_work(work_id: int, stage: str):
     try:
-        security.check_correctness(work_id, stage)
+        security.check_correctness(work_id=work_id, stage=stage)
     except HTTPException as e:
         logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
         raise e
 
     logger.info(f"Retrieved work {work_id} at stage {stage}")
-    return works.upload_data(work_id, stage=stage)
+    return await works.upload_data(work_id, stage)
 
 
 @router.post("/{work_id}/{stage}/scan")
 async def scan_table(work_id: int, stage: str):
     try:
-        security.check_correctness(work_id, stage)
+        security.check_correctness(work_id=work_id, stage=stage)
     except HTTPException as e:
         logger.error(f"Approval failed for work {work_id} at stage {stage}: {e}")
         raise e
 
     logger.info(f"Scanning at {stage} for work {work_id}")
-    return await works.scan_table(work_id, stage=stage)
+    return await works.scan_table(work_id, stage)
 
 
 @router.post("/{work_id}/{stage}/approve")
@@ -62,4 +62,4 @@ async def complete_stage(work_id: int, stage: str):
         raise e
 
     logger.info(f"Completing stage {stage} for work {work_id}")
-    return await works.complete_stage(work_id)
+    return await works.complete_stage(work_id, stage)
