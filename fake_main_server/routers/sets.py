@@ -1,8 +1,8 @@
 import logging
-from fastapi import HTTPException
 
-from fastapi import APIRouter
-from fake_main_server.config import TOOLS_SETS_IDS, TOOLS_SETS_TYPES, TOOLS_IDS
+from fastapi import APIRouter, HTTPException
+
+from fake_main_server.config import TOOLS_IDS, TOOLS_SETS_IDS
 
 router = APIRouter()
 

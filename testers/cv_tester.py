@@ -1,6 +1,6 @@
-import requests
 import os
 
+import requests
 from PIL import Image, ImageDraw, ImageFont
 
 CV_SERVICE_URL = "http://localhost:9001/infer"
@@ -43,5 +43,4 @@ try:
     img.show()
 
 except requests.RequestException as e:
-    print(f"Error communicating with CV service: {e}"
-          f"{e.response.json()}")
+    print(f"Error communicating with CV service: {e}" f"{e.response.json()}")

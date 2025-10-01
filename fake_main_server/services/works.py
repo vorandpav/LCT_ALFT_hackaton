@@ -1,9 +1,12 @@
 import base64
 import logging
-from fake_main_server.config import WORKS_IDS, TOOLS_SETS_IDS, WORK_STAGES, TOOLS_IDS
-from fake_main_server.services import camera_client, cv_client
-from fake_main_server.utils import photos, mapping
+
 from fastapi import HTTPException
+
+from fake_main_server.config import (TOOLS_IDS, TOOLS_SETS_IDS, WORK_STAGES,
+                                     WORKS_IDS)
+from fake_main_server.services import camera_client, cv_client
+from fake_main_server.utils import mapping, photos
 
 logger = logging.getLogger(__name__)
 
@@ -11,21 +14,23 @@ logger = logging.getLogger(__name__)
 async def scan_table(work_id: int, stage: str):
     """Один цикл сканирования: получить фото, распознать, сохранить."""
     try:
-        # 1. Получаем фото как байты
         photo_bytes = await camera_client.get_photo(work_id)
-        logger.info(f"Captured photo for work {work_id}, stage={stage} ({len(photo_bytes)} bytes)")
-
-        # 2. Отправляем байты в CV-сервис
+        logger.info(
+            f"Captured photo for work {work_id}, stage={stage} ({len(photo_bytes)} bytes)"
+        )
         cv_answer = await cv_client.infer(photo_bytes)
-        logger.info(f"Received {len(cv_answer)} detections from CV for work {work_id}, stage={stage}")
+        logger.info(
+            f"Received {len(cv_answer)} detections from CV for work {work_id}, stage={stage}"
+        )
 
     except HTTPException as e:
         raise e
     except Exception as e:
-        logger.error(f"Unexpected error during scanning for work {work_id}, stage={stage}: {e}")
+        logger.error(
+            f"Unexpected error during scanning for work {work_id}, stage={stage}: {e}"
+        )
         raise HTTPException(status_code=500, detail="Unexpected error during scanning")
 
-    # 3. Генерируем ID и сохраняем фото, используя ваш модуль
     photo_id = photos.generate_id(work_id, stage)
     try:
         photos.save(photo_bytes, photo_id)
@@ -38,7 +43,6 @@ async def scan_table(work_id: int, stage: str):
         logger.error(f"An unexpected error occurred while saving photo {photo_id}: {e}")
         raise HTTPException(status_code=500, detail="Failed to save photo")
 
-    # 4. Обрабатываем результат
     boxes = []
 
     tools_to_be_approved = set(TOOLS_SETS_IDS[WORKS_IDS[work_id]["set_id"]]["tools"])
@@ -47,27 +51,33 @@ async def scan_table(work_id: int, stage: str):
 
     try:
         for det in cv_answer["detections"]:
-            mapped_tool = mapping.map_tool_class_to_names(det["predicted_class"], tools_to_be_approved)
+            mapped_tool = mapping.map_tool_class_to_names(
+                det["predicted_class"], tools_to_be_approved
+            )
             if not mapped_tool:
                 continue
-            boxes.append({
-                "bbox": det["bbox"],
-                "predicted_name": mapped_tool,
-                "confidence": det["confidence"]
-            })
+            boxes.append(
+                {
+                    "bbox": det["bbox"],
+                    "predicted_name": mapped_tool,
+                    "confidence": det["confidence"],
+                }
+            )
     except ValueError as e:
         logger.error(f"Mapping error for work {work_id}, stage={stage}: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
-    logger.info(f"Scanned photo {photo_id} for work {work_id}, stage={stage}, detections: {boxes}")
+    logger.info(
+        f"Scanned photo {photo_id} for work {work_id}, stage={stage}, detections: {boxes}"
+    )
 
-    photo_base64 = base64.b64encode(photo_bytes).decode('utf-8')
+    photo_base64 = base64.b64encode(photo_bytes).decode("utf-8")
 
     return {
         "photo_id": photo_id,
         "advice": cv_answer["advice"],
         "photo_base64": photo_base64,
-        "boxes": boxes
+        "boxes": boxes,
     }
 
 
@@ -80,48 +90,61 @@ async def approve_box(work_id: int, stage: str, box: dict):
 
 async def upload_data(work_id: int, stage: str):
     """Загрузка всех данных по работе на данном этапе"""
-    data = {"tid_to_tname": {}, }
-    tools_to_be_approved = set(TOOLS_SETS_IDS[WORKS_IDS[work_id]["set_id"]]["tools"])
+    all_tools = set(TOOLS_SETS_IDS[WORKS_IDS[work_id]["set_id"]]["tools"])
 
-    def process_stored_data(processing_stage: str):
+    def process_stored_data(processing_stage: str, all_tools: set):
         photo_ids = WORKS_IDS[work_id][f"photo_ids_{processing_stage}"]
-        photo_data = [{
-            "photo_id": pid,
-            "photo_base64": photos.load_base64(pid)
-        } for pid in photo_ids]
+        photo_data = [
+            {"photo_id": pid, "photo_base64": photos.load_base64(pid)}
+            for pid in photo_ids
+        ]
         approved_boxes = WORKS_IDS[work_id][f"approved_boxes_{processing_stage}"]
-        approved_boxes = [box.update({"tool_name": TOOLS_IDS[box["tool_id"]]}) or box for box in approved_boxes]
+        approved_boxes = [
+            box.update({"tool_name": TOOLS_IDS[box["tool_id"]]}) or box
+            for box in approved_boxes
+        ]
 
-        nonlocal tools_to_be_approved
-        tools_to_be_approved -= set([box["tool_id"] for box in approved_boxes])
+        tools_to_be_approved = all_tools - set([box["tool_id"] for box in approved_boxes])
 
-        data.update({
+        return {
+            "tid_to_tname": {tid: TOOLS_IDS[tid] for tid in tools_to_be_approved},
             "photo_data": photo_data,
             "approved_boxes": approved_boxes,
-        })
+        }
 
     if stage in ["GIVING", "GETTING"]:
-        process_stored_data(stage)
+        return process_stored_data(stage, all_tools)
+    else:
+        return {
+            "GIVING": process_stored_data("GIVING", all_tools),
+            "GETTING": process_stored_data("GETTING", all_tools),
+        }
 
-    for tid in tools_to_be_approved:
-        tool_name = TOOLS_IDS[tid]
-        data["tid_to_tname"][tid] = tool_name
 
-    return data
-
-
-async def complete_stage(work_id: int, stage: str):
+async def complete_stage(work_id: int):
     """Завершение этапа работы"""
+    stage = WORKS_IDS[work_id]["stage"]
     if stage in ["COMPLETED", "ERROR"]:
         logger.error(f"Cannot complete stage {stage}")
         raise HTTPException(status_code=400, detail=f"Cannot complete stage {stage}")
 
-    if (stage in ["GIVING", "GETTING"]
-            and len(WORKS_IDS[work_id][f"approved_boxes_{stage}"])
-            < len(TOOLS_SETS_IDS[WORKS_IDS[work_id]["set_id"]]["tools"])):
-        logger.warning(f"Cannot complete stage {stage} for work {work_id}, not all tools detected")
+    if stage in ["GIVING", "GETTING"] and len(
+            WORKS_IDS[work_id][f"approved_boxes_{stage}"]
+    ) < len(TOOLS_SETS_IDS[WORKS_IDS[work_id]["set_id"]]["tools"]):
+        logger.warning(
+            f"Cannot complete stage {stage} for work {work_id}, not all tools detected"
+        )
         return {"ok": False, "error": "Not all tools detected"}
 
     WORKS_IDS[work_id]["stage"] = WORK_STAGES[WORK_STAGES.index(stage) + 1]
-    logger.info(f"Completed stage {stage} for work {work_id}, new stage: {WORKS_IDS[work_id]['stage']}")
+    logger.info(
+        f"Completed stage {stage} for work {work_id}, new stage: {WORKS_IDS[work_id]['stage']}"
+    )
     return {"ok": True, "new_stage": WORKS_IDS[work_id]["stage"]}
+
+
+async def error_stage(work_id: int):
+    """Сообщение об ошибке на этапе работы"""
+    WORKS_IDS[work_id]["stage"] = "ERROR"
+    logger.info(f"Reported error for work {work_id}, new stage: ERROR")
+    return {"ok": True, "new_stage": "ERROR"}

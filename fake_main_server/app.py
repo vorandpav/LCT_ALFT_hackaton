@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fake_main_server.routers import users, works, sets
+
 from fake_main_server.config import MIDDLEWARE_ORIGINS
+from fake_main_server.routers import sets, users, works
 
 
 def create_app() -> FastAPI:

@@ -1,8 +1,10 @@
 import base64
 import io
-from datetime import datetime
 import os
+from datetime import datetime
+
 from PIL import Image
+
 from fake_main_server.config import PHOTO_DIR
 
 
@@ -40,6 +42,6 @@ def load_base64(photo_name: str) -> str:
         raise ValueError(f"File not found: {photo_name}")
     try:
         with open(path, "rb") as f:
-            return base64.b64encode(f.read()).decode('utf-8')
+            return base64.b64encode(f.read()).decode("utf-8")
     except IOError as e:
         raise ValueError(f"Error reading file {photo_name}: {e}")

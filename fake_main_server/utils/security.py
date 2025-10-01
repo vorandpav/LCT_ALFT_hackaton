@@ -1,5 +1,6 @@
 from fastapi import HTTPException
-from fake_main_server.config import USERS_IDS, WORKS_IDS, WORK_STAGES
+
+from fake_main_server.config import USERS_IDS, WORK_STAGES, WORKS_IDS
 
 
 def check_access(user_id: int, work_id: int):
@@ -36,5 +37,7 @@ def check_correctness(user_id: int = None, work_id: int = None, stage: str = Non
     if work_id is not None and stage is not None:
         work = WORKS_IDS[work_id]
         if work["stage"] != stage:
-            raise HTTPException(status_code=400, detail="Stage does not match work's current stage")
+            raise HTTPException(
+                status_code=400, detail="Stage does not match work's current stage"
+            )
     return True

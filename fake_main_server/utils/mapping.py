@@ -5,7 +5,9 @@ def map_tool_class_to_names(predicted_class: str, tools_ids: set[int]) -> list[s
     """Сопоставляет класс модели с конкретными названиями инструментов из множества tools_ids."""
     if predicted_class in TOOLS_CLASSES:
         possible_names = TOOLS_CLASSES[predicted_class]
-        matched_names = [TOOLS_IDS[tid] for tid in tools_ids if TOOLS_IDS[tid] in possible_names]
+        matched_names = [
+            TOOLS_IDS[tid] for tid in tools_ids if TOOLS_IDS[tid] in possible_names
+        ]
         return matched_names
     elif predicted_class in TOOLS_IDS.values():
         if predicted_class in [TOOLS_IDS[tid] for tid in tools_ids]:

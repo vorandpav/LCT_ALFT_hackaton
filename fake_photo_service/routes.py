@@ -1,7 +1,8 @@
 import asyncio
 import logging
-from fastapi import APIRouter
 import os
+
+from fastapi import APIRouter
 
 from .storage import get_photo_path, serve_photo
 

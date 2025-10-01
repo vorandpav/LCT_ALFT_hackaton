@@ -1,7 +1,8 @@
-import os
-import json
 import hashlib
-from fastapi import HTTPException, UploadFile
+import os
+
+from fastapi import HTTPException
+
 from .config import PHOTO_DIR, TEST_RESPONSES
 
 

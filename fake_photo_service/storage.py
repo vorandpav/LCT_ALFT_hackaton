@@ -1,7 +1,9 @@
-import os
 import logging
-from fastapi.responses import FileResponse
+import os
+
 from fastapi import HTTPException
+from fastapi.responses import FileResponse
+
 from .config import PHOTO_BASE_DIR, TEST_RESPONSES
 
 log = logging.getLogger("fake_photo_service")
@@ -17,7 +19,7 @@ def get_photo_path(work_id: str):
     photos = TEST_RESPONSES[work_id]
 
     idx = current_index.get(work_id, 0)
-    current_index[work_id] = idx + 1
+    current_index[work_id] = (idx + 1) % len(photos)
 
     if idx < 0 or idx >= len(photos):
         raise HTTPException(status_code=404, detail="No photo for this step")
