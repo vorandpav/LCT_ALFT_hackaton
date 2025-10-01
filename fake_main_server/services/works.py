@@ -90,6 +90,7 @@ async def upload_data(work_id: int, stage: str):
             "photo_base64": photos.load_base64(pid)
         } for pid in photo_ids]
         approved_boxes = WORKS_IDS[work_id][f"approved_boxes_{processing_stage}"]
+        approved_boxes = [box.update({"tool_name": TOOLS_IDS[box["tool_id"]]}) or box for box in approved_boxes]
 
         nonlocal tools_to_be_approved
         tools_to_be_approved -= set([box["tool_id"] for box in approved_boxes])

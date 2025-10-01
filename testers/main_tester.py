@@ -105,19 +105,19 @@ except Exception as e:
 
 try:
     for approved_box in [{'photo_id': photo_id,
-                          'bbox': [0.297604, 0.268135, 0.548575, 0.417098],
+                          'bbox': [0.276878, 0.462867, 0.078368, 0.279793],
                           'tool_id': 107},
                          {'photo_id': photo_id,
-                          'bbox': [0.258096, 0.376511, 0.218264, 0.405872],
+                          'bbox': [0.380505, 0.395509, 0.128886, 0.61658],
                           'tool_id': 102},
                          {'photo_id': photo_id,
-                          'bbox': [0.367552, 0.392919, 0.197539, 0.343696],
+                          'bbox': [0.485751, 0.426598, 0.090674, 0.531952],
                           'tool_id': 109},
                          {'photo_id': photo_id,
-                          'bbox': [0.377915, 0.531952, 0.139249, 0.490501],
+                          'bbox': [0.567034, 0.41019, 0.104275, 0.478411],
                           'tool_id': 105},
                          {'photo_id': photo_id,
-                          'bbox': [0.560233, 0.503022, 0.139896, 0.417098],
+                          'bbox': [0.669365, 0.413644, 0.132772, 0.400691],
                           'tool_id': 110}
                          ]:
         response = requests.post(f"{MAIN_SERVICE_URL}works/{WORK_ID}/{stage}/approve", json=approved_box)
