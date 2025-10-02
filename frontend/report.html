@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Отчёт по работе</title>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet" href="css/report.css"/>
+</head>
+<body class="main-body">
+<div class="container">
+    <header class="app-header">
+        <img src="logo.png" alt="Логотип АФЛТ системс" class="logo-small"/>
+        <div class="info-bar">
+            <div class="info-item" id="info-user-id"></div>
+            <div class="info-item" id="info-user-name"></div>
+            <div class="info-item" id="info-powers"></div>
+            <div class="info-item" id="info-work-id"></div>
+            <div class="info-item" id="info-stage"></div>
+        </div>
+        <div class="header-actions">
+            <button id="exit-button" class="header-btn">Выход</button>
+        </div>
+    </header>
+    <main>
+        <section class="photo-viewer">
+            <div class="photo-controls">
+                <label for="photo-select">Выберите фото для просмотра:</label>
+                <select id="photo-select"></select>
+            </div>
+            <div class="image-display">
+                <canvas id="photo-canvas"></canvas>
+            </div>
+        </section>
+        <div class="report-tables-container">
+            <section class="table-section">
+                <h2>Выданные инструменты (GIVING)</h2>
+                <div class="table-container">
+                    <table id="giving-table">
+                        <thead>
+                        <tr>
+                            <th>Фото</th>
+                            <th>Название</th>
+                            <th>ID</th>
+                            <th>Статус</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="table-section">
+                <h2>Принятые инструменты (GETTING)</h2>
+                <div class="table-container">
+                    <table id="getting-table">
+                        <thead>
+                        <tr>
+                            <th>Фото</th>
+                            <th>Название</th>
+                            <th>ID</th>
+                            <th>Статус</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+<div id="image-modal" class="modal hidden">
+    <span class="modal-close" id="modal-close-button">&times;</span>
+    <img class="modal-content" id="modal-image"/>
+</div>
+<script src="js/api.js"></script>
+<script src="js/graphics.js"></script>
+<script src="js/report.js"></script>
+</body>
+</html>

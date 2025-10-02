@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Панель управления</title>
+    <link rel="stylesheet" href="css/base.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+</head>
+<body class="main-body">
+<div class="container">
+    <header class="app-header">
+        <img src="logo.png" alt="Логотип АФЛТ системс" class="logo-small"/>
+        <div class="info-bar">
+            <div class="info-item" id="info-user-id"></div>
+            <div class="info-item" id="info-user-name"></div>
+            <div class="info-item" id="info-powers"></div>
+            <div class="info-item" id="info-work-id"></div>
+            <div class="info-item" id="info-stage"></div>
+        </div>
+        <div class="header-actions">
+            <button id="scan-button" class="header-btn">Сканировать</button>
+            <button id="complete-work-button" class="header-btn">Завершить работу</button>
+            <button id="error-button" class="header-btn btn-danger">Ошибка</button>
+        </div>
+    </header>
+    <main>
+        <div class="table-container">
+            <table id="tools-table">
+                <thead>
+                <tr>
+                    <th class="col-photo">Фото</th>
+                    <th class="col-name">Название</th>
+                    <th class="col-id">ID</th>
+                    <th class="col-actions">Действия</th>
+                    <th class="col-status">Уверенность / Статус</th>
+                </tr>
+                </thead>
+                <tbody id="tools-table-body"></tbody>
+            </table>
+        </div>
+    </main>
+</div>
+<script src="js/api.js"></script>
+<script src="js/autocomplete.js"></script>
+<script src="js/dataManager.js"></script>
+<script src="js/graphics.js"></script>
+<script src="js/tableManager.js"></script>
+<script src="js/app.js"></script>
+<div id="image-modal" class="modal hidden">
+    <span class="modal-close" id="modal-close-button">&times;</span>
+    <img class="modal-content" id="modal-image"/>
+</div>
+</body>
+</html>

@@ -1,18 +1,14 @@
-# Dockerfile for fake_main_server and fake_photo_service
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install dependencies for both services
-COPY fake_main_server/requirements.txt main_requirements.txt
-COPY fake_photo_service/requirements.txt photo_requirements.txt
+COPY main_server/requirements.txt ./main_requirements.txt
+COPY fake_photo_service/requirements.txt ./photo_requirements.txt
 RUN pip install --no-cache-dir -r main_requirements.txt -r photo_requirements.txt
 
-# Copy application code
-COPY fake_main_server/ ./fake_main_server
-COPY fake_photo_service/ ./fake_photo_service
+COPY main_server/ ./main_server
+COPY fake_photo_service/ ./photo_service
 
-# Copy supervisord config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN pip install supervisor

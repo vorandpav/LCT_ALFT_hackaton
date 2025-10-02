@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 CV_SERVICE_URL = "http://localhost:9001/infer"
 
-PHOTO_PATH = "../fake_photo_service/photos/201_1.JPG"
+PHOTO_PATH = "../fake_photo_service/photos/201_3.JPG"
 
 try:
     with open(PHOTO_PATH, "rb") as image_file:

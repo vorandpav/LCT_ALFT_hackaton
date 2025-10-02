@@ -24,10 +24,22 @@ services:
     volumes:
       - ./fake_photo_service/photos:/app/fake_photo_service/photos
     environment:
-      - FAKE_CAMERA_URL=http://app_services:9000
+      - PHOTO_SERVICE_URL=http://localhost:9000
       - FAKE_CV_URL=http://cv_service:9001
     depends_on:
       - cv_service
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: site
+    ports:
+      - "8080:80"
+    depends_on:
+      - app_services
     networks:
       - app-network
 
