@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  cv_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.cv
+    container_name: cv_service
+    ports:
+      - "9001:9001"
+    volumes:
+      - ./fake_cv/photos:/app/fake_cv/photos
+    networks:
+      - app-network
+
+  app_services:
+    build:
+      context: .
+      dockerfile: Dockerfile.services
+    container_name: app_services
+    ports:
+      - "9000:9000"
+      - "9002:9002"
+    volumes:
+      - ./fake_photo_service/photos:/app/fake_photo_service/photos
+    environment:
+      - FAKE_CAMERA_URL=http://app_services:9000
+      - FAKE_CV_URL=http://cv_service:9001
+    depends_on:
+      - cv_service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

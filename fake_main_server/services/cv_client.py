@@ -3,14 +3,13 @@ import logging
 import httpx
 from fastapi import HTTPException
 
-FAKE_CV_URL = "http://localhost:9001"
+from fake_main_server.config import FAKE_CV_URL
 
 logger = logging.getLogger("cv_client")
 
 
 async def infer(photo_bytes: bytes):
     """Отправляет байты фото в CV-сервис для распознавания."""
-    # Упаковываем байты в multipart/form-data
     files = {"file": ("photo.jpg", photo_bytes, "image/jpeg")}
     async with httpx.AsyncClient(timeout=15.0) as client:
         try:

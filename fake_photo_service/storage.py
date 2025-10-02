@@ -4,7 +4,7 @@ import os
 from fastapi import HTTPException
 from fastapi.responses import FileResponse
 
-from .config import PHOTO_BASE_DIR, TEST_RESPONSES
+from .config import PHOTO_DIR, TEST_RESPONSES
 
 log = logging.getLogger("fake_photo_service")
 
@@ -12,7 +12,7 @@ current_index = {}
 
 
 def get_photo_path(work_id: str):
-    """Определяет путь к файлу фото для указанного work_id"""
+    """Определяет путь к файлу и имя фото для указанного work_id"""
     if work_id not in TEST_RESPONSES:
         raise HTTPException(status_code=404, detail="work_id not found")
 
@@ -24,14 +24,14 @@ def get_photo_path(work_id: str):
     if idx < 0 or idx >= len(photos):
         raise HTTPException(status_code=404, detail="No photo for this step")
 
-    photo_path = f"{PHOTO_BASE_DIR}/{photos[idx]}"
+    photo_path = f"{PHOTO_DIR}/{photos[idx]}"
     if not os.path.exists(photo_path):
         log.error(f"File not found: {photo_path}")
         raise HTTPException(status_code=500, detail=f"File not found: {photos[idx]}")
 
-    return photo_path
+    return photo_path, photos[idx]
 
 
-def serve_photo(photo_path: str) -> FileResponse:
+def serve_photo(photo_path: str, filename: str) -> FileResponse:
     """Отдаёт файл как HTTP-ответ"""
-    return FileResponse(photo_path, media_type="image/jpeg")
+    return FileResponse(photo_path, media_type="image/jpeg", filename=filename)

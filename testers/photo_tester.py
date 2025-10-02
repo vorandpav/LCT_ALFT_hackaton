@@ -3,7 +3,7 @@ from io import BytesIO
 import requests
 from PIL import Image
 
-work_id = 202
+work_id = 201
 url = f"http://localhost:9000/{work_id}"
 
 try:

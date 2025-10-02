@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 async def scan_table(work_id: int, stage: str):
     """Один цикл сканирования: получить фото, распознать, сохранить."""
     try:
-        photo_bytes = await camera_client.get_photo(work_id)
+        photo_bytes, filename = await camera_client.get_photo(work_id)
         logger.info(
             f"Captured photo for work {work_id}, stage={stage} ({len(photo_bytes)} bytes)"
         )
@@ -31,16 +31,16 @@ async def scan_table(work_id: int, stage: str):
         )
         raise HTTPException(status_code=500, detail="Unexpected error during scanning")
 
-    photo_id = photos.generate_id(work_id, stage)
+    # photo_id = photos.generate_id(work_id, stage)
     try:
-        photos.save(photo_bytes, photo_id)
-        WORKS_IDS[work_id][f"photo_ids_{stage}"].append(photo_id)
-        logger.info(f"Photo saved as {photo_id}")
+        # photos.save(photo_bytes, photo_id)
+        WORKS_IDS[work_id][f"photo_ids_{stage}"].append(filename)
+        logger.info(f"Photo saved as {filename}")
     except ValueError as e:
-        logger.error(f"Failed to save photo {photo_id} for work {work_id}: {e}")
+        logger.error(f"Failed to save photo {filename} for work {work_id}: {e}")
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        logger.error(f"An unexpected error occurred while saving photo {photo_id}: {e}")
+        logger.error(f"An unexpected error occurred while saving photo {filename}: {e}")
         raise HTTPException(status_code=500, detail="Failed to save photo")
 
     boxes = []
@@ -68,14 +68,13 @@ async def scan_table(work_id: int, stage: str):
         raise HTTPException(status_code=400, detail=str(e))
 
     logger.info(
-        f"Scanned photo {photo_id} for work {work_id}, stage={stage}, detections: {boxes}"
+        f"Scanned photo {filename} for work {work_id}, stage={stage}, detections: {boxes}"
     )
 
     photo_base64 = base64.b64encode(photo_bytes).decode("utf-8")
 
     return {
-        "photo_id": photo_id,
-        "advice": cv_answer["advice"],
+        "photo_id": filename,
         "photo_base64": photo_base64,
         "boxes": boxes,
     }

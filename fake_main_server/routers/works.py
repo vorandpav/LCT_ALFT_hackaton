@@ -11,7 +11,6 @@ router = APIRouter()
 
 logger = logging.getLogger("works")
 
-
 @router.get("/")
 async def list_works():
     logger.info("Listing all works")

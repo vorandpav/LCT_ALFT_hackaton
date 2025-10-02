@@ -1,12 +1,12 @@
-import os
-
-PHOTO_DIR = os.getenv("PHOTO_DIR", "photos")
+PHOTO_DIR = "../fake_photo_service/photos"
 
 FAKE_CAMERA_URL = "http://localhost:9000"
 
+FAKE_CV_URL = "http://localhost:9001"
+
 MIDDLEWARE_ORIGINS = [
-    "http://localhost:63342",
-    "http://127.0.0.1:63342",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
 
 WORK_STAGES = ["PUBLISHED", "GIVING", "IN_WORK", "GETTING", "COMPLETED", "ERROR"]
