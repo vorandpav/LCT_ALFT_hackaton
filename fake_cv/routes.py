@@ -6,7 +6,7 @@ import io
 from io import BytesIO
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 
 from .storage import find_matching_file, load_result
 from .config import PHOTO_DIR
@@ -64,16 +64,15 @@ def resize_image(image_bytes: bytes, target_size: tuple[int, int]) -> bytes:
         return output_buffer.getvalue()
 
 
-@router.post("/yolo_infer", response_class=StreamingResponse)
+@router.post("/yolo_infer")
 async def yolo_infer(file: UploadFile = File(...)):
-    """Принимает изображение и возвращает разметку от YOLO в txt файле."""
+    """Принимает изображение и возвращает разметку от YOLO в формате JSON."""
 
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Uploaded file is not an image.")
 
     image_bytes = await file.read()
 
-    # Изменение размера изображения
     try:
         target_resolution = (1024, 728)
         resized_image_bytes = resize_image(image_bytes, target_resolution)
@@ -83,38 +82,44 @@ async def yolo_infer(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail="Image processing failed.")
 
     # 1. Инициализация модели YOLO-OBB
-    # model = YOLO('yolov8n-obb.pt')  # или путь к вашей модели
+    # model = YOLO('yolov11m-obb.pt') # или путь к вашей модели
 
     # 2. Выполнение предсказания.
-    # results = model(resized_image_bytes)  # results - это список объектов Results
+    # results = model(resized_image_bytes)
 
-    # 3. Обработка результатов и формирование txt файла
-    # output_lines = []
+    # 3. Обработка результатов и формирование списка словарей для JSON
+    # detections_list = []
     # for r in results:
-    #     for obb in r.obb:  # r.obb содержит ориентированные рамки
-    #         # Формат xywhr: (центр_x, центр_y, ширина, высота, угол_в_радианах)
-    #         # Координаты обычно нормализованы (от 0 до 1)
+    #     for obb in r.obb: # r.obb содержит ориентированные рамки
     #         class_id = int(obb.cls)
-    #         x_center, y_center, w, h, angle = obb.xywhr[0].tolist()
-    #         output_lines.append(f"{class_id} {x_center} {y_center} {w} {h} {angle}")
+    #         confidence = float(obb.conf) # Уверенность модели
+    #         # obb.xywhr - (центр_x, центр_y, ширина, высота, угол_в_радианах)
+    #         x, y, w, h, angle = obb.xywhr[0].tolist()
 
-    # output_string = "\n".join(output_lines)
+    #         detection_data = {
+    #             "class_id": class_id,
+    #             "confidence": confidence,
+    #             "obb": {
+    #                 "x_center": x,
+    #                 "y_center": y,
+    #                 "width": w,
+    #                 "height": h,
+    #                 "angle_rad": angle
+    #             }
+    #         }
+    #         detections_list.append(detection_data)
 
-    # Заглушка: возвращаем пустую строку
-    output_string = ""
+    # 2. Заглушка: теперь возвращаем структуру для JSON-ответа.
+    #    Вместо пустой строки создаем пустой список для обнаруженных объектов.
+    detections_list = []
 
-    # Преобразование строки в байты для отправки
-    output_bytes = output_string.encode('utf-8')
-
-    # Создание файлоподобного объекта в памяти
-    string_io = io.BytesIO(output_bytes)
-
-    # Получение оригинального имени файла без расширения
-    base_filename = os.path.splitext(file.filename)[0]
-
-    # Установка заголовков для скачивания файла
-    headers = {
-        'Content-Disposition': f'attachment; filename="{base_filename}.txt"'
+    # 3. Формируем финальный Python-словарь для ответа.
+    #    FastAPI автоматически преобразует его в JSON.
+    response_content = {
+        "filename": file.filename,
+        "resized_shape": {"width": target_resolution[0], "height": target_resolution[1]},
+        "detections": detections_list
     }
 
-    return StreamingResponse(string_io, media_type="text/plain", headers=headers)
+    # 4. Возвращаем JSONResponse с нашим словарем.
+    return JSONResponse(content=response_content)
