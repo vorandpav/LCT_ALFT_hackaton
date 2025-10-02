@@ -109,5 +109,5 @@ TEST_RESPONSES = {
 
 -   **Python**: 3.10+
 -   **Docker**
--   **Библиотеки**: FastAPI, torch, ultralytics
+-   **Библиотеки**: requests, pillow, fastapi, uvicorn, httpx, python-multipart
 -   **Минимальные ресурсы**: 4 CPU, 4 GB RAM, GPU (рекомендуется)
